@@ -1,0 +1,31 @@
+# Git
+.git
+.github
+.gitignore
+.gitattributes
+
+# Éditeur
+.editorconfig
+.vscode
+.idea
+
+# Dépendances locales (réinstallées dans l'image)
+vendor/
+
+# Logs & cache locaux
+logs/
+tmp/
+
+# Tests & outils de qualité
+tests/
+phpunit.xml.dist
+phpstan.neon
+phpcs.xml
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Divers
+*.md

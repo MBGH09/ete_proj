@@ -1,0 +1,112 @@
+name: CD – Build & Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*.*.*'          # ex: v1.0.0 → pousse un tag versionné
+  workflow_dispatch:      # déclenchement manuel depuis l'UI GitHub
+
+permissions:
+  contents: read
+
+env:
+  # Remplacez par votre nom d'utilisateur Docker Hub si différent du nom du dépôt
+  IMAGE_NAME: malek003/louer_chalets
+
+jobs:
+  # ----------------------------------------------------------------
+  # 1. CI – Tests & qualité (reprend le pipeline existant)
+  # ----------------------------------------------------------------
+  test:
+    name: Tests & Code Quality
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo_sqlite
+          coverage: none
+
+      - name: Composer install
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit
+        run: |
+          cp config/app_local.example.php config/app_local.php
+          vendor/bin/phpunit
+        env:
+          DATABASE_TEST_URL: sqlite://./testdb.sqlite
+
+  # ----------------------------------------------------------------
+  # 2. CD – Build Docker image et push sur Docker Hub
+  # ----------------------------------------------------------------
+  docker:
+    name: Build & Push to Docker Hub
+    runs-on: ubuntu-22.04
+    needs: test          # ne s'exécute que si les tests passent
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Génère les tags Docker automatiquement :
+      #  - branch main/master  → latest
+      #  - tag git v1.2.3      → 1.2.3 + latest
+      - name: Docker metadata (tags & labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+
+      # Active BuildKit + QEMU pour les builds multi-architecture (amd64/arm64)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Connexion à Docker Hub avec les secrets GitHub
+      # À configurer dans : Settings → Secrets → Actions :
+      #   DOCKERHUB_USERNAME  → votre nom d'utilisateur Docker Hub
+      #   DOCKERHUB_TOKEN     → Access Token (hub.docker.com → Account Settings → Security)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build multi-platform + push avec cache GitHub Actions
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Résumé visible dans l'onglet "Actions" de GitHub
+      - name: Image digest summary
+        run: |
+          echo "### ✅ Docker image pushed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Image:** \`${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags pushed:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

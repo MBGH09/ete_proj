@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  # ----------------------------------------------------------------
+  # Application CakePHP
+  # ----------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: louer_chalets_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: "louer_chalets"
+      DEBUG: "true"
+      APP_ENCODING: "UTF-8"
+      APP_DEFAULT_LOCALE: "fr_FR"
+      APP_DEFAULT_TIMEZONE: "UTC"
+      SECURITY_SALT: "changeme_generate_a_real_64char_salt_in_production_00000000000000"
+      DATABASE_URL: "mysql://cakephp:secret@db/louer_cha?encoding=utf8mb4&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
+    volumes:
+      # Persister les logs et le cache entre les redémarrages
+      - ./logs:/var/www/html/logs
+      - ./tmp:/var/www/html/tmp
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - louer_chalets_net
+
+  # ----------------------------------------------------------------
+  # Base de données MySQL 8
+  # ----------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: louer_chalets_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_DATABASE: louer_cha
+      MYSQL_USER: cakephp
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Charger le dump SQL initial s'il existe
+      - ./Base de donnée:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - louer_chalets_net
+
+  # ----------------------------------------------------------------
+  # phpMyAdmin (optionnel – accès via http://localhost:8081)
+  # ----------------------------------------------------------------
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: louer_chalets_pma
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: cakephp
+      PMA_PASSWORD: secret
+    depends_on:
+      - db
+    networks:
+      - louer_chalets_net
+
+volumes:
+  db_data:
+
+networks:
+  louer_chalets_net:
+    driver: bridge
