@@ -71,7 +71,9 @@ COPY . .
 
 # --------------- Permissions -----------------------------------------
 # tmp/ et logs/ doivent être accessibles en écriture par www-data
-RUN chown -R www-data:www-data /var/www/html \
+# mkdir -p car ces dossiers sont dans .gitignore et n'existent pas après COPY
+RUN mkdir -p /var/www/html/tmp /var/www/html/logs \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/tmp \
     && chmod -R 775 /var/www/html/logs
 
