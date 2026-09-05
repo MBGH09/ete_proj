@@ -34,7 +34,7 @@ jobs:
           coverage: none
 
       - name: Composer install
-        run: composer install --no-interaction --prefer-dist
+        run: composer update --no-interaction --prefer-dist
 
       - name: Run PHPUnit
         run: |
