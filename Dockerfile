@@ -23,25 +23,15 @@ RUN composer install \
 FROM php:8.2-apache
 
 # --------------- Extensions PHP requises par CakePHP 4 ----------------
-RUN apt-get update && apt-get install -y \
-        libicu-dev \
-        libonig-dev \
-        libzip-dev \
-        libpng-dev \
-        libjpeg-dev \
-        libfreetype6-dev \
-        zip \
-        unzip \
-        git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
+# Utilise l'installeur de binaires pré-compilés (beaucoup plus rapide que docker-php-ext-install)
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions \
         intl \
         mbstring \
-        pdo \
         pdo_mysql \
         zip \
-        gd \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+        gd
 
 # --------------- Configuration Apache --------------------------------
 # Activer mod_rewrite (requis par CakePHP)
