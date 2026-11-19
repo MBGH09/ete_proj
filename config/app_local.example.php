@@ -36,7 +36,7 @@ return [
             'host' => env('DB_HOST', 'localhost'),
             'username' => env('DB_USERNAME', 'your_db_user'),
             'password' => env('DB_PASSWORD', 'your_db_password'),
-            'database' => env('DB_DATABASE', 'louer_cha'),
+            'database' => env('DB_DATABASE', 'louer_voi'),
             'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'flags' => [],

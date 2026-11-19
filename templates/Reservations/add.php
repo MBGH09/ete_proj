@@ -13,11 +13,11 @@
                 <option value="<?= h($clientName) ?>">
             <?php endforeach; ?>
         </datalist>
-        <?= $this->Form->control('code_chalets', [
+        <?= $this->Form->control('code_voitures', [
             'type' => 'select',
-            'options' => $chalets,
-            'empty' => 'Sélectionner un chalet',
-            'label' => 'Code Chalet'
+            'options' => $voitures,
+            'empty' => 'Sélectionner une voiture',
+            'label' => 'Code Voiture'
         ]) ?>
         <?= $this->Form->control('date_entree', ['type' => 'date']) ?>
         <?= $this->Form->control('date_sortie', ['type' => 'date']) ?>

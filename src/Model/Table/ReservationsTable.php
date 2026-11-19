@@ -33,10 +33,10 @@ class ReservationsTable extends Table
             ->notEmptyString('client_id');
 
         $validator
-            ->scalar('code_chalets')
-            ->maxLength('code_chalets', 50)
-            ->requirePresence('code_chalets', 'create')
-            ->notEmptyString('code_chalets');
+            ->scalar('code_voitures')
+            ->maxLength('code_voitures', 50)
+            ->requirePresence('code_voitures', 'create')
+            ->notEmptyString('code_voitures');
 
         $validator
             ->scalar('date_entree')

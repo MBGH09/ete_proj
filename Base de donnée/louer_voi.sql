@@ -18,19 +18,19 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `louer_cha`
+-- Base de données : `louer_voi`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `chalets`
+-- Structure de la table `voitures`
 --
 
-DROP TABLE IF EXISTS `chalets`;
-CREATE TABLE IF NOT EXISTS `chalets` (
+DROP TABLE IF EXISTS `voitures`;
+CREATE TABLE IF NOT EXISTS `voitures` (
   `code` int NOT NULL AUTO_INCREMENT,
-  `nombre_de_chambre` int NOT NULL,
+  `nombre_de_places` int NOT NULL,
   `prix` int NOT NULL,
   PRIMARY KEY (`code`)
 ) ENGINE=MyISAM AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `reservations` (
   `client_id` int NOT NULL,
   `date_entree` date NOT NULL,
   `date_sortie` date NOT NULL,
-  `code_chalets` int NOT NULL,
+  `code_voitures` int NOT NULL,
   `montant` int NOT NULL,
-  PRIMARY KEY (`client_id`,`date_entree`,`date_sortie`,`code_chalets`,`montant`)
+  PRIMARY KEY (`client_id`,`date_entree`,`date_sortie`,`code_voitures`,`montant`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

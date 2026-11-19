@@ -1,5 +1,5 @@
 <?php
-$cakeDescription = 'Site Louer Chalets';
+$cakeDescription = 'Site Louer Voitures';
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,7 +21,7 @@ $cakeDescription = 'Site Louer Chalets';
         <div class="nav-center">
             <a href="<?= $this->Url->build('/') ?>" class="site-title">
                 <span class="site-icon"></span>
-                <span class="site-name"><h1>Louer Chalets</h1></span>
+                <span class="site-name"><h1>Louer Voitures</h1></span>
             </a>
         </div>
         <div class="nav-right">
@@ -36,7 +36,7 @@ $cakeDescription = 'Site Louer Chalets';
             </div>
             <nav class="sidebar-nav">
                 <?= $this->Html->link('👥 Users', ['controller' => 'Users', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
-                <?= $this->Html->link('🏠 Chalets', ['controller' => 'Chalets', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
+                <?= $this->Html->link('🚗 Voitures', ['controller' => 'Voitures', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
                 <?= $this->Html->link('👤 Clients', ['controller' => 'Clients', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
                 <?= $this->Html->link('📅 Reservations', ['controller' => 'Reservations', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
                 <?= $this->Html->link('💰 Tarifs', ['controller' => 'Tarifs', 'action' => 'index'], ['class' => 'sidebar-link']) ?>
@@ -55,7 +55,7 @@ $cakeDescription = 'Site Louer Chalets';
     
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Louer Chalets. All rights reserved.</p>
+            <p>&copy; 2024 Louer Voitures. All rights reserved.</p>
         </div>
     </footer>
 

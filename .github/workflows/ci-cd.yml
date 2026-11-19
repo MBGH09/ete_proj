@@ -14,7 +14,7 @@ permissions:
 
 env:
   # Remplacez par votre nom d'utilisateur Docker Hub si différent du nom du dépôt
-  IMAGE_NAME: malek003/louer_chalets
+  IMAGE_NAME: malek003/louer_voitures
 
 jobs:
   # ----------------------------------------------------------------
