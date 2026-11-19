@@ -25,9 +25,9 @@ public function view($client_id = null, $date_entree = null, $date_sortie = null
 {
     $reservation = $this->Reservations->newEmptyEntity();
     
-    // Charger la liste des chalets
-    $this->loadModel('Chalets');
-    $chalets = $this->Chalets->find('list', [
+    // Charger la liste des voitures
+    $this->loadModel('Voitures');
+    $voitures = $this->Voitures->find('list', [
         'keyField' => 'code',
         'valueField' => 'code'
     ])->toArray();
@@ -53,7 +53,7 @@ public function view($client_id = null, $date_entree = null, $date_sortie = null
                 unset($data['client_name']); // Supprimer le nom temporaire
             } else {
                 $this->Flash->error(__('Client not found. Please enter a valid client name.'));
-                $this->set(compact('reservation', 'chalets', 'clients'));
+                $this->set(compact('reservation', 'voitures', 'clients'));
                 return;
             }
         }
@@ -66,7 +66,7 @@ public function view($client_id = null, $date_entree = null, $date_sortie = null
             $this->Flash->error(__('Unable to add reservation.'));
         }
     }
-    $this->set(compact('reservation', 'chalets', 'clients'));
+    $this->set(compact('reservation', 'voitures', 'clients'));
 }
        public function edit($client_id = null, $date_entree = null, $date_sortie = null, $montant = null)
     {

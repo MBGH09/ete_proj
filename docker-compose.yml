@@ -8,18 +8,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: louer_chalets_app
+    container_name: louer_voitures_app
     restart: unless-stopped
     ports:
       - "8080:80"
     environment:
-      APP_NAME: "louer_chalets"
+      APP_NAME: "louer_voitures"
       DEBUG: "true"
       APP_ENCODING: "UTF-8"
       APP_DEFAULT_LOCALE: "fr_FR"
       APP_DEFAULT_TIMEZONE: "UTC"
       SECURITY_SALT: "changeme_generate_a_real_64char_salt_in_production_00000000000000"
-      DATABASE_URL: "mysql://cakephp:secret@db/louer_cha?encoding=utf8mb4&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
+      DATABASE_URL: "mysql://cakephp:secret@db/louer_voi?encoding=utf8mb4&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
     volumes:
       # Persister les logs et le cache entre les redémarrages
       - ./logs:/var/www/html/logs
@@ -28,18 +28,18 @@ services:
       db:
         condition: service_healthy
     networks:
-      - louer_chalets_net
+      - louer_voitures_net
 
   # ----------------------------------------------------------------
   # Base de données MySQL 8
   # ----------------------------------------------------------------
   db:
     image: mysql:8.0
-    container_name: louer_chalets_db
+    container_name: louer_voitures_db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootsecret
-      MYSQL_DATABASE: louer_cha
+      MYSQL_DATABASE: louer_voi
       MYSQL_USER: cakephp
       MYSQL_PASSWORD: secret
     ports:
@@ -54,14 +54,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - louer_chalets_net
+      - louer_voitures_net
 
   # ----------------------------------------------------------------
   # phpMyAdmin (optionnel – accès via http://localhost:8081)
   # ----------------------------------------------------------------
   phpmyadmin:
     image: phpmyadmin:5
-    container_name: louer_chalets_pma
+    container_name: louer_voitures_pma
     restart: unless-stopped
     ports:
       - "8081:80"
@@ -72,11 +72,11 @@ services:
     depends_on:
       - db
     networks:
-      - louer_chalets_net
+      - louer_voitures_net
 
 volumes:
   db_data:
 
 networks:
-  louer_chalets_net:
+  louer_voitures_net:
     driver: bridge
